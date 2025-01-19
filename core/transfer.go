@@ -3,7 +3,7 @@ package core
 type header_name = string
 type header_value = string
 
-struct ITransferData interface {
+type ITransferData interface {
 	GetRequestHeaders() []string
 
 	SetResponseHeader(name header_name, value header_value) header_value
@@ -18,12 +18,12 @@ struct ITransferData interface {
 	EndTransfer()
 }
 
-struct ITransferConnection interface {
+type ITransferConnection interface {
 	NextData() ITransferData
 
 	CloseConnection()
 }
 
-struct ITransferer interface {
+type ITransferer interface {
 	NextConnection() ITransferConnection
 }

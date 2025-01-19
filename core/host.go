@@ -1,10 +1,10 @@
 package core
 
-struct IMiddleware interface {
+type IMiddleware interface {
 	Handle(context ITransferData)
 }
 
-struct IHost interface {
+type IHost interface {
 	Setup(trs ITransferer, hnd IMiddleware) bool
 	Start() bool
 	Stop() bool
