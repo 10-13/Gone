@@ -20,6 +20,7 @@ type ITransferData interface {
 
 type ITransferConnection interface {
 	NextData() ITransferData
+	IsClosed() bool
 
 	CloseConnection()
 }
