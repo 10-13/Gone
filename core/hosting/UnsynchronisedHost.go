@@ -29,7 +29,7 @@ func (self *UnsynchronisedHost) RunConnection(conn ITransferConnection) {
 
 func (self *UnsynchronisedHost) RunServer() {
 	for self.running {
-		var conn ITransferConnection := self.trs.NextConnection();
+		conn := self.trs.NextConnection();
 
 		go self.RunConnection(conn)
 	}
