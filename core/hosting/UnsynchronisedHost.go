@@ -7,12 +7,17 @@ type UnsynchronisedHost struct {
 	running bool
 }
 
-func (self UnsynchronisedHost*) Setup(trs ITransferer, hnd IMiddleware) bool {
+func (self *UnsynchronisedHost) Setup(trs ITransferer, hnd IMiddleware) bool {
+	if self.running {
+		return false;
+	}
+	
 	self.trs = trs;
 	self.hnd = hnd;
+	return true;
 }
 
-func (self UnsynchronisedHost*) RunConnection(conn ITransferConnection) {
+func (self *UnsynchronisedHost) RunConnection(conn ITransferConnection) {
 	for !conn.IsClosed() {
 		var data := conn.NextData();
 
@@ -22,29 +27,29 @@ func (self UnsynchronisedHost*) RunConnection(conn ITransferConnection) {
 	}
 }
 
-func (self UnsynchronisedHost*) RunServer() {
-	for running {
+func (self *UnsynchronisedHost) RunServer() {
+	for self.running {
 		var conn ITransferConnection := self.trs.NextConnection();
 
 		go self.RunConnection(conn)
 	}
 }
 
-func (self UnsynchronisedHost*) Start() bool {
-	if running {
+func (self *UnsynchronisedHost) Start() bool {
+	if self.running {
 		return false;
 	}
 
 	go self.RunServer();
-	running = true;
+	self.running = true;
 	return true;
 }
 
-func (self UnsynchronisedHost*) Stop() bool {
-	if !running {
+func (self UnsynchronisedHost) Stop() bool {
+	if !self.running {
 		return false;
 	}
 
-	running = false;
+	self.running = false;
 	return true;
 }
