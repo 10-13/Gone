@@ -6,18 +6,19 @@ import (
 )
 
 type TextTransferData struct {
-	headers       Headers
-	request_body  string
-	response_body string
+	request_headers  Headers
+	response_headers Headers
+	request_body     string
+	response_body    string
 }
 
 func (self *TextTransferData) GetRequestHeaders() Headers {
-	return self.headers
+	return self.request_headers
 }
 
 func (self *TextTransferData) SetResponseHeader(name HeaderName, value HeaderValue) HeaderValue {
-	res, exists := self.headers[name]
-	self.headers[name] = value
+	res, exists := self.response_headers[name]
+	self.response_headers[name] = value
 	if exists {
 		return res
 	}
@@ -25,7 +26,7 @@ func (self *TextTransferData) SetResponseHeader(name HeaderName, value HeaderVal
 }
 
 func (self *TextTransferData) GetResponseHeader(name HeaderName) (HeaderValue, error) {
-	res, exists := self.headers[name]
+	res, exists := self.response_headers[name]
 	if !exists {
 		return res, &NoSuchHeader{Code: 0, Message: string(name)}
 	}
@@ -33,8 +34,8 @@ func (self *TextTransferData) GetResponseHeader(name HeaderName) (HeaderValue, e
 }
 
 func (self *TextTransferData) RemoveResponseHeader(name HeaderName) HeaderValue {
-	res, exists := self.headers[name]
-	delete(self.headers, name)
+	res, exists := self.response_headers[name]
+	delete(self.response_headers, name)
 	if exists {
 		return res
 	}
