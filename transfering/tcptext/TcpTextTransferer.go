@@ -78,16 +78,17 @@ type TextTransferConnection struct {
 
 func (self *TextTransferConnection) NextData() core.ITransferData {
 	req := ""
-	buf := make([]byte, 1024)
+	BUF_SIZE := 1024
+	buf := make([]byte, BUF_SIZE)
 	for {
 		n, err := self.TcpConnection.Read(buf)
 		if err != nil && err != io.EOF {
 			panic("something went wrong in next data method")
 		}
-		if n == 0 {
+		req += string(buf[:n])
+		if n < BUF_SIZE {
 			break
 		}
-		req += string(buf[:n])
 	}
 	lines := strings.Split(req, "\n")
 
@@ -97,7 +98,10 @@ func (self *TextTransferConnection) NextData() core.ITransferData {
 
 	i := 1
 	for ; i < len(lines) && lines[i] != ""; i++ {
-		split_idx := strings.Index(lines[1], ": ")
+		split_idx := strings.Index(lines[i], ": ")
+		if split_idx == -1 {
+			break
+		}
 		headers[HeaderName(lines[i][:split_idx])] = HeaderValue(lines[i][split_idx+2:])
 	}
 
@@ -131,11 +135,11 @@ func (self *TextTransferConnection) CloseConnection() {
 }
 
 type TcpTextTransferer struct {
-	listener net.Listener
+	Listener net.Listener
 }
 
 func (self *TcpTextTransferer) NextConnection() core.ITransferConnection {
-	connection, _ := self.listener.Accept()
+	connection, _ := self.Listener.Accept()
 	return &TextTransferConnection{
 		TcpConnection: connection,
 		closed:        false,
