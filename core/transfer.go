@@ -1,14 +1,15 @@
 package core
 
-type header_name = string
-type header_value = string
+import (
+	. "Gone/custom_types"
+)
 
 type ITransferData interface {
-	GetRequestHeaders() []string
+	GetRequestHeaders() Headers
 
-	SetResponseHeader(name header_name, value header_value) header_value
-	GetResponseHeader(name header_name) bool, header_value
-	RemoveResponseHeader(name header_name) header_value
+	SetResponseHeader(name HeaderName, value HeaderValue) HeaderValue
+	GetResponseHeader(name HeaderName) (HeaderValue, error)
+	RemoveResponseHeader(name HeaderName) HeaderValue
 
 	GetRequsetBody() string
 
