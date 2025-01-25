@@ -1,7 +1,7 @@
 package core
 
 type IMiddleware interface {
-	Handle(context ITransferData)
+	Handle(context *ITransferData)
 }
 
 type IHost interface {

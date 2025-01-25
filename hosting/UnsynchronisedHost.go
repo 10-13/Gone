@@ -23,7 +23,7 @@ func (self *UnsynchronisedHost) RunConnection(conn core.ITransferConnection) {
 	for !conn.IsClosed() {
 		data := conn.NextData()
 
-		self.hnd.Handle(data)
+		self.hnd.Handle(&data)
 
 		data.EndTransfer()
 	}
