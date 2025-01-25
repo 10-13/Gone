@@ -3,6 +3,7 @@ package tcptext
 import (
 	"Gone/core"
 	. "Gone/custom_types"
+	"io"
 	"net"
 	"strings"
 )
@@ -72,6 +73,7 @@ func (self *TextTransferData) EndTransfer() {
 
 type TextTransferConnection struct {
 	TcpConnection net.Conn
+	closed        bool
 }
 
 func (self *TextTransferConnection) NextData() core.ITransferData {
@@ -79,7 +81,7 @@ func (self *TextTransferConnection) NextData() core.ITransferData {
 	buf := make([]byte, 1024)
 	for {
 		n, err := self.TcpConnection.Read(buf)
-		if err != nil {
+		if err != nil && err != io.EOF {
 			panic("something went wrong in next data method")
 		}
 		if n == 0 {
@@ -120,17 +122,22 @@ func (self *TextTransferConnection) NextData() core.ITransferData {
 }
 
 func (self *TextTransferConnection) IsClosed() bool {
-	panic("Not implemented.")
+	return self.closed
 }
 
 func (self *TextTransferConnection) CloseConnection() {
-	panic("Not implemented.")
+	self.closed = true
+	self.TcpConnection.Close()
 }
 
 type TcpTextTransferer struct {
-	// TODO: Implement
+	listener net.Listener
 }
 
 func (self *TcpTextTransferer) NextConnection() core.ITransferConnection {
-	panic("Not implemented.")
+	connection, _ := self.listener.Accept()
+	return &TextTransferConnection{
+		TcpConnection: connection,
+		closed:        false,
+	}
 }
